@@ -1,0 +1,46 @@
+#include<stdio.h>
+
+int main()
+{
+    int n = 6;
+    int m = 5; 
+    
+    int memSize[6] = {300, 600, 350, 200, 750, 125};
+    int memAlloc[6] = {0};
+    
+    int procSize[5] = {115, 500, 358, 200, 375}; 
+    int procAlloc[5] = {0}; /
+    int procPartition[5] = {-1};
+    
+    for(int i = 0; i < m; i++)
+    {
+        
+        for(int j = 0; j < n; j++)
+        {
+            
+            if(memAlloc[j] == 0 && memSize[j] >= procSize[i])
+            {
+                
+                memAlloc[j] = 1;
+                procAlloc[i] = 1;
+                procPartition[i] = j;
+                break; 
+            }
+        }
+    }
+    printf("Process\tSize\tAllocation\tPartition\n");
+    for(int i = 0; i < m; i++)
+    {
+        printf("%d\t%d\t", i+1, procSize[i]);
+        if(procAlloc[i])
+        {
+            printf("Allocated\t%d\n", procPartition[i]+1);
+        }
+        else
+        {
+            printf("Not allocated\n");
+        }
+    }
+    
+    return 0;
+}
