@@ -1,0 +1,61 @@
+#include <stdio.h>
+
+int main() {
+    int max[3][3] = {{3, 6, 8}, {4, 3, 3}, {3, 4, 4}};
+    int allocation[3][3] = {{3, 3, 3}, {2, 0, 3}, {1, 2, 4}};
+    int available[3] = {1, 2, 0};
+    int work[3];
+    int finish[3] = {0, 0, 0};
+    int deadlock = 0;
+    int i, j, k;
+
+    for (i = 0; i < 3; i++) {
+        work[i] = available[i];
+    }
+
+    for (k = 0; k < 3 && !deadlock; k++) {
+        for (i = 0; i < 3; i++) {
+            
+            if (finish[i]) {
+                continue;
+            }
+            
+            for (j = 0; j < 3; j++) {
+                if (max[i][j] - allocation[i][j] > work[j]) {
+                    break;
+                }
+            }
+           
+            if (j == 3) {
+                finish[i] = 1;
+                for (j = 0; j < 3; j++) {
+                    work[j] += allocation[i][j];
+                }
+            }
+        }
+        for (i = 0; i < 3; i++) {
+            if (!finish[i]) {
+                break;
+            }
+        }
+        if (i == 3) {
+          
+            deadlock = 0;
+        } else {
+
+            deadlock = 1;
+            printf("Deadlock detected! The following processes are deadlocked:\n");
+            for (i = 0; i < 3; i++) {
+                if (!finish[i]) {
+                    printf("Process %d\n", i);
+                }
+            }
+        }
+    }
+
+    if (!deadlock) {
+        printf("No deadlock detected.\n");
+    }
+
+    return 0;
+}
