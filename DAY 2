@@ -1,0 +1,44 @@
+#include <stdio.h>
+
+int main() {
+    int page_frames = 3;
+    int page_sequence[] = {1,2,3,2,1,5,2,1,6,2,5,6,3,1,3,6,1,2,4,3};
+    int page_table[page_frames];
+    int page_faults = 0;
+    int i, j, k, lru_index;
+
+    // initialize page table to -1 (indicating empty)
+    for (i = 0; i < page_frames; i++) {
+        page_table[i] = -1;
+    }
+
+    // loop through page reference sequence
+    for (i = 0; i < sizeof(page_sequence) / sizeof(int); i++) {
+        // check if page is already in page table
+        for (j = 0; j < page_frames; j++) {
+            if (page_table[j] == page_sequence[i]) {
+                // move page to front of page table
+                for (k = j; k > 0; k--) {
+                    page_table[k] = page_table[k-1];
+                }
+                page_table[0] = page_sequence[i];
+                break;
+            }
+        }
+        if (j == page_frames) {
+            // page fault - remove least recently used page and replace with new page
+            lru_index = page_frames - 1;
+            for (k = 1; k < page_frames; k++) {
+                if (page_table[k] < page_table[lru_index]) {
+                    lru_index = k;
+                }
+            }
+            page_table[lru_index] = page_sequence[i];
+            page_faults++;
+        }
+    }
+
+    printf("Number of page faults: %d\n", page_faults);
+
+    return 0;
+}
