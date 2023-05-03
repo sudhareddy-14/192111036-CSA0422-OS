@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_FRAMES 3
+
+int main() {
+    int page_frames[MAX_FRAMES];
+    bool page_fault = false;
+    int page_fault_count = 0;
+    int current_frame = 0;
+    int page_reference_sequence[] = {4, 1, 2, 4, 3, 2, 1, 5};
+    int num_page_references = sizeof(page_reference_sequence) / sizeof(int);
+
+    for (int i = 0; i < MAX_FRAMES; i++) {
+        page_frames[i] = -1;
+    }
+
+    for (int i = 0; i < num_page_references; i++) {
+        int page = page_reference_sequence[i];
+        page_fault = true;
+
+        for (int j = 0; j < MAX_FRAMES; j++) {
+            if (page_frames[j] == page) {
+                page_fault = false;
+                break;
+            }
+        }
+
+        if (page_fault) {
+            page_frames[current_frame] = page;
+            current_frame = (current_frame + 1) % MAX_FRAMES;
+            page_fault_count++;
+        }
+
+        printf("Page frames: ");
+        for (int j = 0; j < MAX_FRAMES; j++) {
+            if (page_frames[j] == -1) {
+                printf("- ");
+            } else {
+                printf("%d ", page_frames[j]);
+            }
+        }
+        printf("Page fault: %s\n", page_fault ? "Yes" : "No");
+    }
+
+    printf("Number of page faults: %d\n", page_fault_count);
+
+    return 0;
+}
