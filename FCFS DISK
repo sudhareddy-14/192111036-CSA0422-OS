@@ -1,0 +1,36 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+
+int main()
+{
+    int i, n, head, track, move = 0;
+
+    printf("Enter the number of tracks: ");
+    scanf("%d", &n);
+
+    int queue[n];
+
+    printf("Enter the track positions: ");
+    for(i=0; i<n; i++)
+        scanf("%d", &queue[i]);
+
+    printf("Enter the initial head position: ");
+    scanf("%d", &head);
+
+    printf("The sequence of head movement is: ");
+
+    for(i=0; i<n; i++)
+    {
+        track = queue[i];
+        move += abs(track-head);
+        head = track;
+        printf("%d -> ", track);
+    }
+
+    printf("End\n");
+    printf("The total head movement is: %d\n", move);
+    printf("The average head movement is: %f\n", (float)move/n);
+
+    return 0;
+}
