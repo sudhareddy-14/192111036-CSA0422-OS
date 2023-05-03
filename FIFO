@@ -47,3 +47,15 @@ int main() {
 
     return 0;
 }
+
+OUTPUT:
+Page frames: 4 - - Page fault: Yes
+Page frames: 4 1 - Page fault: Yes
+Page frames: 4 1 2 Page fault: Yes
+Page frames: 4 1 2 Page fault: No
+Page frames: 3 1 2 Page fault: Yes
+Page frames: 3 1 2 Page fault: No
+Page frames: 3 1 2 Page fault: No
+Page frames: 3 5 2 Page fault: Yes
+Number of page faults: 5
+
