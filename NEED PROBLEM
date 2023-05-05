@@ -1,0 +1,46 @@
+#include <stdio.h>
+
+#define MAX_PROCESSES 10
+#define NUM_RESOURCES 3
+
+int allocation[MAX_PROCESSES][NUM_RESOURCES];
+int max[MAX_PROCESSES][NUM_RESOURCES];
+int need[MAX_PROCESSES][NUM_RESOURCES];
+
+int main() {
+    int i, j;
+
+    // read in the allocation and max matrices from input
+    printf("Enter the allocation matrix:\n");
+    for (i = 0; i < MAX_PROCESSES; i++) {
+        printf("Process %d: ", i);
+        for (j = 0; j < NUM_RESOURCES; j++) {
+            scanf("%d", &allocation[i][j]);
+        }
+    }
+
+  printf("Enter the max matrix:\n");
+    for (i = 0; i < MAX_PROCESSES; i++) {
+        printf("Process %d: ", i);
+        for (j = 0; j < NUM_RESOURCES; j++) {
+            scanf("%d", &max[i][j]);
+        }
+    }
+
+    for (i = 0; i < MAX_PROCESSES; i++) {
+        for (j = 0; j < NUM_RESOURCES; j++) {
+            need[i][j] = max[i][j] - allocation[i][j];
+        }
+    }
+
+    printf("The need matrix is:\n");
+    for (i = 0; i < MAX_PROCESSES; i++) {
+        printf("Process %d: ", i);
+        for (j = 0; j < NUM_RESOURCES; j++) {
+            printf("%d ", need[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
