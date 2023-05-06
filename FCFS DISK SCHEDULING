@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define MAX 100
+
+int main() {
+    int i, n, head, tracks[MAX], sum = 0;
+
+    printf("Enter the number of tracks: ");
+    scanf("%d", &n);
+
+    printf("Enter the track positions: ");
+    for (i = 0; i < n; i++) {
+        scanf("%d", &tracks[i]);
+    }
+
+    printf("Enter the initial head position: ");
+    scanf("%d", &head);
+
+    printf("Head movement:\n%d -> ", head);
+    for (i = 0; i < n; i++) {
+        sum += abs(head - tracks[i]);
+        head = tracks[i];
+        printf("%d -> ", head);
+    }
+
+    printf("\nAverage head movement: %.2f\n", (float) sum / n);
+
+    return 0;
+}
