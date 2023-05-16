@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_USERS 3
+#define MAX_FILES 3
+
+typedef struct {
+    char name[20];
+    char files[MAX_FILES][20];
+    int fileCount;
+} Directory;
+
+typedef struct {
+    Directory directories[MAX_USERS];
+    int userCount;
+} FileSystem;
+
+void createUserDirectory(FileSystem* fs, const char* userName) {
+    if (fs->userCount == MAX_USERS) {
+        printf("Maximum user directories reached. Cannot create a new directory.\n");
+        return;
+    }
+
+    Directory* userDir = &(fs->directories[fs->userCount]);
+    strcpy(userDir->name, userName);
+    userDir->fileCount = 0;
+
+    fs->userCount++;
+
+    printf("Created directory for user: %s\n", userName);
+}
+
+void createFileInDirectory(FileSystem* fs, const char* userName, const char* fileName) {
+    int userIndex = -1;
+    for (int i = 0; i < fs->userCount; i++) {
+        if (strcmp(fs->directories[i].name, userName) == 0) {
+            userIndex = i;
+            break;
+        }
+    }
+
+    if (userIndex == -1) {
+        printf("User directory not found: %s\n", userName);
+        return;
+    }
+
+    Directory* userDir = &(fs->directories[userIndex]);
+
+    if (userDir->fileCount == MAX_FILES) {
+        printf("Maximum file limit reached for user: %s\n", userName);
+        return;
+    }
+
+    strcpy(userDir->files[userDir->fileCount], fileName);
+    userDir->fileCount++;
+
+    printf("Created file: %s in user directory: %s\n", fileName, userName);
+}
+
+void printFileSystem(FileSystem* fs) {
+    printf("------- File System -------\n");
+    for (int i = 0; i < fs->userCount; i++) {
+        Directory* userDir = &(fs->directories[i]);
+        printf("User: %s\n", userDir->name);
+        printf("Files: ");
+        for (int j = 0; j < userDir->fileCount; j++) {
+            printf("%s ", userDir->files[j]);
+        }
+        printf("\n\n");
+    }
+}
+
+int main() {
+    FileSystem fs;
+    fs.userCount = 0;
+
+    // Create user directories
+    createUserDirectory(&fs, "user1");
+    createUserDirectory(&fs, "user2");
+    createUserDirectory(&fs, "user3");
+
+    // Create files in directories
+    createFileInDirectory(&fs, "user1", "file1");
+    createFileInDirectory(&fs, "user1", "file2");
+    createFileInDirectory(&fs, "user1", "file3");
+    createFileInDirectory(&fs, "user2", "file4");
+    createFileInDirectory(&fs, "user2", "file5");
+    createFileInDirectory(&fs, "user3", "file6");
+
+    // Print the file system
+    printFileSystem(&fs);
+
+    return 0;
+}
