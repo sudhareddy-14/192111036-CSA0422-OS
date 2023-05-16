@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+int abs_diff(int a, int b) {
+    return abs(a - b);
+}
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void sort_tracks(int *tracks, int num_tracks, int head_position) {
+    for (int i = 0; i < num_tracks - 1; i++) {
+        for (int j = 0; j < num_tracks - i - 1; j++) {
+            if (abs_diff(tracks[j], head_position) > abs_diff(tracks[j + 1], head_position)) {
+                swap(&tracks[j], &tracks[j + 1]);
+            }
+        }
+    }
+}
+
+void scan(int *tracks, int num_tracks, int head_position) {
+    int i, j, seek_count = 0, diff;
+    int current_track;
+    int direction = 1; // 1 for moving towards higher track numbers, -1 for moving towards lower track numbers
+
+    sort_tracks(tracks, num_tracks, head_position);
+
+    int head_movement = 0;
+    int head_index = 0;
+
+    // Find the index of the track closest to the head position
+    for (i = 0; i < num_tracks; i++) {
+        if (tracks[i] >= head_position) {
+            head_index = i;
+            break;
+        }
+    }
+
+    // Calculate head movement
+    for (i = head_index; i < num_tracks; i++) {
+        current_track = tracks[i];
+        diff = abs_diff(current_track, head_position);
+        head_movement += diff;
+        head_position = current_track;
+        seek_count++;
+    }
+
+    head_movement += abs_diff(tracks[num_tracks - 1], head_position); // Move to the end track
+    head_position = tracks[num_tracks - 1];
+    seek_count++;
+
+    head_movement += abs_diff(tracks[0], head_position); // Move to the start track
+    head_position = tracks[0];
+    seek_count++;
+
+    // Calculate average head movement
+    float average_head_movement = (float)head_movement / seek_count;
+
+    printf("Average head movement: %.2f\n", average_head_movement);
+}
+
+int main() {
+    int num_tracks = 5;
+    int tracks[] = {55, 58, 60, 70, 18};
+    int head_position = 50;
+
+    scan(tracks, num_tracks, head_position);
+
+    return 0;
+}
