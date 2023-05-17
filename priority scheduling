@@ -1,0 +1,67 @@
+#include <stdio.h>
+
+struct Process {
+    int burstTime;
+    int priority;
+};
+
+void priorityScheduling(struct Process processes[], int n) {
+    int waitingTime[n], turnaroundTime[n], completionTime[n];
+    float totalWaitingTime = 0, totalTurnaroundTime = 0;
+
+    // Sort the processes based on priority (ascending order)
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (processes[j].priority > processes[j + 1].priority) {
+                // Swap the processes
+                struct Process temp = processes[j];
+                processes[j] = processes[j + 1];
+                processes[j + 1] = temp;
+            }
+        }
+    }
+
+    // Calculate completion time, waiting time, and turnaround time
+    for (int i = 0; i < n; i++) {
+        if (i == 0) {
+            completionTime[i] = processes[i].burstTime;
+        } else {
+            completionTime[i] = completionTime[i - 1] + processes[i].burstTime;
+        }
+
+        turnaroundTime[i] = completionTime[i];
+        waitingTime[i] = turnaroundTime[i] - processes[i].burstTime;
+
+        totalWaitingTime += waitingTime[i];
+        totalTurnaroundTime += turnaroundTime[i];
+    }
+
+    // Print the results
+    printf("Process\tBurst Time\tPriority\tWaiting Time\tTurnaround Time\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t\t%d\t\t%d\t\t%d\t\t%d\n", i + 1, processes[i].burstTime, processes[i].priority, waitingTime[i], turnaroundTime[i]);
+    }
+
+    float avgWaitingTime = totalWaitingTime / n;
+    float avgTurnaroundTime = totalTurnaroundTime / n;
+
+    printf("\nAverage Waiting Time: %.2f\n", avgWaitingTime);
+    printf("Average Turnaround Time: %.2f\n", avgTurnaroundTime);
+}
+
+int main() {
+    int n = 3; // Number of processes
+
+    // Initialize the processes with burst time and priority
+    struct Process processes[n];
+    processes[0].burstTime = 30;
+    processes[0].priority = 2;
+    processes[1].burstTime = 5;
+    processes[1].priority = 1;
+    processes[2].burstTime = 12;
+    processes[2].priority = 3;
+
+    priorityScheduling(processes, n);
+
+    return 0;
+}
