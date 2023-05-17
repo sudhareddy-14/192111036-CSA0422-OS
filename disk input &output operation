@@ -1,0 +1,78 @@
+#include <stdio.h>
+
+#define DISK_SIZE 100
+
+// Function to calculate disk I/O operations for contiguous allocation
+int contiguousAllocation(int blockNumber) {
+    if (blockNumber > DISK_SIZE || blockNumber < 1) {
+        printf("Invalid block number\n");
+        return -1;
+    }
+
+    return 1; // Only one disk I/O operation is required for contiguous allocation
+}
+
+// Function to calculate disk I/O operations for linked allocation
+int linkedAllocation(int blockNumber) {
+    if (blockNumber > DISK_SIZE || blockNumber < 1) {
+        printf("Invalid block number\n");
+        return -1;
+    }
+
+    int diskIO = 0;
+    int currentBlock = 1;
+
+    while (currentBlock < blockNumber) {
+        currentBlock++; // Move to the next block
+        diskIO++; // Increment disk I/O operation count
+    }
+
+    return diskIO;
+}
+
+// Function to calculate disk I/O operations for indexed (single-level) allocation
+int indexedAllocation(int blockNumber) {
+    if (blockNumber > DISK_SIZE || blockNumber < 1) {
+        printf("Invalid block number\n");
+        return -1;
+    }
+
+    return 1; // Only one disk I/O operation is required for indexed allocation
+}
+
+int main() {
+    int blockNumber;
+    char option;
+
+    printf("Enter the block number: ");
+    scanf("%d", &blockNumber);
+
+    printf("Select the allocation strategy:\n");
+    printf("a. Contiguous allocation\n");
+    printf("b. Linked allocation\n");
+    printf("c. Indexed allocation\n");
+    printf("Choose an option: ");
+    scanf(" %c", &option);
+
+    int diskIO;
+
+    switch (option) {
+        case 'a':
+            diskIO = contiguousAllocation(blockNumber);
+            break;
+        case 'b':
+            diskIO = linkedAllocation(blockNumber);
+            break;
+        case 'c':
+            diskIO = indexedAllocation(blockNumber);
+            break;
+        default:
+            printf("Invalid option\n");
+            return 0;
+    }
+
+    if (diskIO >= 0)
+        printf("Number of disk I/O operations required: %d\n", diskIO);
+
+    return 0;
+}
