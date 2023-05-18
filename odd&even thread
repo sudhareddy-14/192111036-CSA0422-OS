@@ -1,0 +1,51 @@
+#include <stdio.h>
+
+#define MAX_PARTITIONS 5
+
+void firstFit(int partitions[], int n, int processes[], int m);
+
+int main() {
+    int partitions[MAX_PARTITIONS] = {40, 10, 30, 60}; // Memory partitions in KB
+    int processes[] = {100, 50, 30, 120, 35}; // Processes in KB
+    int n = sizeof(partitions) / sizeof(partitions[0]);
+    int m = sizeof(processes) / sizeof(processes[0]);
+
+    firstFit(partitions, n, processes, m);
+
+    return 0;
+}
+
+void firstFit(int partitions[], int n, int processes[], int m) {
+    int allocation[m]; // Array to store allocation status
+    int i, j;
+
+    // Initialize all allocations as -1 (unallocated)
+    for (i = 0; i < m; i++)
+        allocation[i] = -1;
+
+    // Traverse each process and find suitable partition
+    for (i = 0; i < m; i++) {
+        // Find the first partition that can accommodate the current process
+        for (j = 0; j < n; j++) {
+            if (partitions[j] >= processes[i]) {
+                // Allocate the process to the partition
+                allocation[i] = j;
+
+                // Reduce the available memory in the partition
+                partitions[j] -= processes[i];
+
+                break;
+            }
+        }
+    }
+
+    // Print the allocation details
+    printf("Process No.\tProcess Size\tPartition No.\n");
+    for (i = 0; i < m; i++) {
+        printf("%d\t\t%d\t\t", i + 1, processes[i]);
+        if (allocation[i] != -1)
+            printf("%d\n", allocation[i] + 1);
+        else
+            printf("Not Allocated\n");
+    }
+}
