@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <pthread.h>
+
+// Function to print even numbers
+void* printEvenNumbers(void* arg) {
+    int i;
+    for (i = 2; i <= 20; i += 2) {
+        printf("Even: %d\n", i);
+        usleep(100000); // Sleep for 100 milliseconds
+    }
+    return NULL;
+}
+
+// Function to print odd numbers
+void* printOddNumbers(void* arg) {
+    int i;
+    for (i = 1; i <= 20; i += 2) {
+        printf("Odd: %d\n", i);
+        usleep(100000); // Sleep for 100 milliseconds
+    }
+    return NULL;
+}
+
+int main() {
+    pthread_t evenThread, oddThread;
+
+    // Create the even thread
+    if (pthread_create(&evenThread, NULL, printEvenNumbers, NULL) != 0) {
+        printf("Failed to create even thread.\n");
+        return 1;
+    }
+
+    // Create the odd thread
+    if (pthread_create(&oddThread, NULL, printOddNumbers, NULL) != 0) {
+        printf("Failed to create odd thread.\n");
+        return 1;
+    }
+
+    // Wait for both threads to finish
+    if (pthread_join(evenThread, NULL) != 0) {
+        printf("Failed to join even thread.\n");
+        return 1;
+    }
+
+    if (pthread_join(oddThread, NULL) != 0) {
+        printf("Failed to join odd thread.\n");
+        return 1;
+    }
+
+    return 0;
+}
