@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_TRACKS 100
+
+void cscan(int tracks[], int n, int head);
+int compare(const void* a, const void* b);
+
+int main() {
+    int tracks[MAX_TRACKS];
+    int n, head, i;
+
+    printf("Enter the number of tracks: ");
+    scanf("%d", &n);
+
+    printf("Enter the track positions: ");
+    for (i = 0; i < n; i++)
+        scanf("%d", &tracks[i]);
+
+    printf("Enter the initial head position: ");
+    scanf("%d", &head);
+
+    cscan(tracks, n, head);
+
+    return 0;
+}
+
+void cscan(int tracks[], int n, int head) {
+    int i, j, distance = 0;
+    int start = 0, end = 199;
+
+    qsort(tracks, n, sizeof(int), compare); 
+
+    printf("Sequence of tracks visited:\n");
+
+    for (i = 0; i < n; i++) {
+        if (tracks[i] > head) {
+            start = i;
+            break;
+        }
+    }
+
+    for (i = start; i < n; i++) {
+        printf("%d ", tracks[i]);
+        distance += abs(tracks[i] - head);
+        head = tracks[i];
+    }
+
+    if (start > 0) {
+        printf("%d ", end);
+        distance += abs(end - head);
+        head = end;
+    }
+
+    for (i = 0; i < start; i++) {
+        printf("%d ", tracks[i]);
+        distance += abs(tracks[i] - head);
+        head = tracks[i];
+    }
+
+    printf("\n");
+    printf("Average head movement: %.2f\n", (float)distance / n);
+}
+
+int compare(const void* a, const void* b) {
+    return (*(int*)a - *(int*)b);
+}
