@@ -1,0 +1,24 @@
+#include <stdio.h>
+
+#define DISK_BLOCK_SIZE 8192 // 8 KB in bytes
+#define POINTER_SIZE 4 // Size of a disk block pointer in bytes
+
+// Function to calculate the maximum file size
+unsigned long long calculateMaxFileSize() {
+    unsigned long long directBlocks = 12;
+    unsigned long long singleIndirectBlocks = DISK_BLOCK_SIZE / POINTER_SIZE;
+    unsigned long long doubleIndirectBlocks = singleIndirectBlocks * singleIndirectBlocks;
+    unsigned long long tripleIndirectBlocks = doubleIndirectBlocks * singleIndirectBlocks;
+
+    unsigned long long totalBlocks = directBlocks + singleIndirectBlocks + doubleIndirectBlocks + tripleIndirectBlocks;
+    unsigned long long maxFileSize = totalBlocks * DISK_BLOCK_SIZE;
+
+    return maxFileSize;
+}
+
+int main() {
+    unsigned long long maxFileSize = calculateMaxFileSize();
+    printf("Maximum file size: %llu bytes\n", maxFileSize);
+
+    return 0;
+}
