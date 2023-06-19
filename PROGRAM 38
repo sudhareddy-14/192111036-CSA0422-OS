@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+#define MAX_SIZE 100
+
+int main() {
+    int fileDescriptor;
+    char data[MAX_SIZE];
+
+    fileDescriptor = open("example.txt", O_CREAT | O_WRONLY, 0644);
+    if (fileDescriptor == -1) {
+        printf("Failed to create the file.\n");
+        return 1;
+    }
+
+    printf("Enter data to write into the file (max %d characters):\n", MAX_SIZE);
+    fgets(data, MAX_SIZE, stdin);
+
+    if (write(fileDescriptor, data, sizeof(data)) == -1) {
+        printf("Failed to write data to the file.\n");
+        close(fileDescriptor);
+        return 1;
+    }
+
+    close(fileDescriptor);
+
+    fileDescriptor = open("example.txt", O_RDONLY);
+    if (fileDescriptor == -1) {
+        printf("Failed to open the file for reading.\n");
+        return 1;
+    }
+
+    printf("\nData read from the file:\n");
+    while (read(fileDescriptor, data, sizeof(data)) != 0) {
+        printf("%s", data);
+    }
+
+    close(fileDescriptor);
+
+    return 0;
+}
