@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct process {
+    int id;
+    int arrival_time;
+    int burst_time;
+    int remaining_time;
+    int start_time;
+    int finish_time;
+    int waiting_time;
+    int turnaround_time;
+};
+
+int cmpfunc(const void * a, const void * b) {
+    struct process *p1 = (struct process *)a;
+    struct process *p2 = (struct process *)b;
+    return (p1->arrival_time - p2->arrival_time);
+}
+
+int main() {
+    int n, i, j, time, smallest, remaining, completed = 0;
+    float avg_waiting_time = 0, avg_turnaround_time = 0;
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+    struct process p[n];
+    for (i = 0; i < n; i++) {
+        printf("Enter arrival time and burst time for process %d: ", i + 1);
+        scanf("%d %d", &p[i].arrival_time, &p[i].burst_time);
+        p[i].id = i + 1;
+        p[i].remaining_time = p[i].burst_time;
+    }
+    qsort(p, n, sizeof(struct process), cmpfunc);
+    time = p[0].arrival_time;
+    while (completed != n) {
+        smallest = -1;
+        remaining = 999999;
+        for (i = 0; i < n; i++) {
+            if (p[i].arrival_time <= time && p[i].remaining_time < remaining && p[i].remaining_time > 0) {
+                smallest = i;
+                remaining = p[i].remaining_time;
+            }
+        }
+        if (smallest == -1) {
+            time++;
+        } else {
+            p[smallest].remaining_time--;
+            if (p[smallest].remaining_time == 0) {
+                completed++;
+                p[smallest].finish_time = time + 1;
+                p[smallest].waiting_time = p[smallest].finish_time - p[smallest].burst_time - p[smallest].arrival_time;
+                p[smallest].turnaround_time = p[smallest].finish_time - p[smallest].arrival_time;
+                avg_waiting_time += p[smallest].waiting_time;
+                avg_turnaround_time += p[smallest].turnaround_time;
+            }
+            time++;
+        }
+    }
+    avg_waiting_time /= n;
+    avg_turnaround_time /= n;
+    printf("\nProcess ID\tArrival Time\tBurst Time\tWaiting Time\tTurnaround Time\n");
+    for (i = 0; i < n; i++) {
+        printf("P%d\t\t%d\t\t%d\t\t%d\t\t%d\n", p[i].id, p[i].arrival_time, p[i].burst_time, p[i].waiting_time, p[i].turnaround_time);
+    }
+    printf("\nAverage waiting time = %.2fms\n", avg_waiting_time);
+    printf("Average turnaround time = %.2fms\n", avg_turnaround_time);
+    return 0;
+}
